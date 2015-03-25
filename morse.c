@@ -100,11 +100,10 @@ void playMorseWord(char *str, bool inPlace) {
                 // sleep appropriate time
                 usleep(timeUnit * (dah ? TIME_DAH : TIME_DIT));
 
-                // hide dit/dah when not active
+                // erase dit/dah when not active
                 if(inPlace) {
                     printf(" \b");
                     fflush(stdout);
-
                 }
                 // sleep between elements
                 usleep(timeUnit * (TIME_BETWEEN_ELEMENT));
@@ -141,6 +140,6 @@ int main(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
         // point to next word
         char *str = argv[i];
-        playMorseWord(str, false);
+        playMorseWord(str, true);
     }
 }
