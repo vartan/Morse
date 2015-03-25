@@ -115,7 +115,8 @@ void playMorseWord(char *str, bool inPlace) {
     usleep(timeUnit * 
         (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
     fflush(stdout);
-
+    if(inPlace)
+        printf(" %s", backspace);
 
 }
 
