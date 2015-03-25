@@ -75,7 +75,11 @@ void createMorseString(struct morseChar *morse, char *morseString) {
  * @param inPlace   true if you want the function to use only one character.
  */
 void playMorseWord(char *str, bool inPlace) {
-    const int LENGTH_BETWEEN_WORDS = 3;
+    const int TIME_BETWEEN_WORDS = 7;
+    const int TIME_BETWEEN_CHAR = 3;
+    const int TIME_BETWEEN_ELEMENT = 1;
+    const int TIME_DIT = 1;
+    const int TIME_DAH = 3;
     int i;
     bool dah;
     float timeUnit = 0.1*1e6; // time per dit
@@ -92,22 +96,24 @@ void playMorseWord(char *str, bool inPlace) {
                 // backspace
                 printf("%c%s", dah?'-':'.', backspace);
                 fflush(stdout);
-                usleep(timeUnit * 1);
-                if(dah) usleep(timeUnit * 2); // dah is 3x longer than dit
-                printf(" %s", backspace);
+                if(dah) usleep(timeUnit * TIME_DAH); // dah is 3x longer than dit
+                else    usleep(timeUnit * TIME_DIT);
+                if(inPlace)
+                    printf(" %s", backspace);
                 fflush(stdout);
-                usleep(timeUnit * 3);
+                usleep(timeUnit * (TIME_BETWEEN_ELEMENT));
             } // end of letter
             printf(" %s", backspace);
             fflush(stdout);
-            usleep(timeUnit * 3);
-
+            usleep(timeUnit * (TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
         }
         str++;
     }
-    printf("/%s", backspace);
+    printf("/ %s%s", backspace, backspace);
     fflush(stdout);
-    usleep(timeUnit * 6); // should be 7, count space after last char.
+
+    usleep(timeUnit * 
+        (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
     fflush(stdout);
 
 
