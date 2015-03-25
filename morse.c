@@ -47,40 +47,54 @@ struct morseChar morseValues[] = {
 };
 
 struct morseChar *getMorseForChar(char c) {
-        if(c >= 'a' && c <= 'z') {
-            return &morseValues[10+c-'a'];
-        } else if(c >= 'A' && c <= 'Z') {
-            return &morseValues[10+c-'A'];
-        } else if(c>='0' && c<='9') {
-            return &morseValues[c-'0'];
-        }
-
-        return NULL;
+    if(c >= 'a' && c <= 'z') {
+        return &morseValues[10+c-'a'];
+    }
+    else if(c >= 'A' && c <= 'Z') {
+        return &morseValues[10+c-'A'];
+    }
+    else if(c>='0' && c<='9') {
+        return &morseValues[c-'0'];
+    }
+    return NULL;
 }
 void createMorseString(struct morseChar *morse, char *morseString) {
     int i;
     for(i = 0; i < morse->length; i++) {
-        (*morseString++) = ((morse->sounds>>i)&1)?'-':'.';
+        // add next morse character
+        (*morseString++) = ((morse->sounds >> i) & 1) ? '-' : '.';
     }
-    (*morseString++) = 0;
+    // add null terminator
+    (*morseString++) = 0; 
 }
 int main(int argc, char *argv[]) {
-    char morseString[6];
+    char morseString[6];                /**< 5 character string + null 
+                                        terminator to contain morse letter */
+    struct morseChar *currentMorseChar; /**< current morse character       */
+    
+    // debugging information: show how large each morse char takes
     printf("Size of struct: %lu\n", sizeof(struct morseChar));
-    for(int i=1;i<argc;i++) {
+
+    // loop through each word in args
+    for(int i = 1; i < argc; i++) {
+        // point to next word
         char *str = argv[i];
-        while(*str!=0) {
-            struct morseChar *a = getMorseForChar(*str);
-            if(a!=NULL) {
-                createMorseString(a, &morseString[0]);
+        while(*str!=0) { // loop through each character
+            // get morseChar pointer from character
+            currentMorseChar = getMorseForChar(*str);
+            if(currentMorseChar != NULL) {
+                // generate morse string from morse char
+                createMorseString(currentMorseChar, &morseString[0]);
+                // print morse char
                 printf("%s ", morseString);
-            } else {
-                printf("\n\nCould not find %c\n\n", *str);
+            }
+            else {
+                printf("\n\nERROR: Could not find %c\n\n", *str);
                 exit(1);
             }
             str++;
         }
+        // print / between words
         printf("/ ");
-
     }
 }
