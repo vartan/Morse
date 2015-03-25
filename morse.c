@@ -152,10 +152,16 @@ int main(int argc, char *argv[]) {
     struct morseChar *currentMorseChar; /**< current morse character       */
     int start = 1;
     bool inPlace = false;
-
+    if(argc == 1) {
+        printf("Usage: \n");
+        printf("./morse   [string]   plays string in morse "
+            "code across the command line\n");
+        printf("./morse . [string]   plays string in morse code in place\n");
+        exit(1);
+    }
     // debugging information: show how large each morse char takes
     printf("Size of struct: %lu\n", sizeof(struct morseChar));
-    if(atoi(argv[1]) > 1) {
+    if(argv[1][0] == '.') {
         inPlace = true;
         start++;
         printf("Morse in place: [ ]\b\b");
