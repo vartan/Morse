@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stdbool.h>
+
+/**
+ * Contains all data required to generate morse code
+ */
 struct morseChar {
     uint8_t length:3; /**< number of sounds in the word               */
     uint8_t sounds:5; /**< list of sounds, where 0th bit is the first */
@@ -46,7 +50,11 @@ struct morseChar morseValues[] = {
     {4, 0x0D}, //Y: -.--
     {4, 0x03}  //Z: --..
 };
-
+/**
+ * Gets a morseChar for an input char
+ * @param  c char which you would like to get morse data on
+ * @return   morseChar which contains data to use morse with that char
+ */
 struct morseChar *getMorseForChar(char c) {
     if(c >= 'a' && c <= 'z') {
         return &morseValues[10+c-'a'];
@@ -59,6 +67,11 @@ struct morseChar *getMorseForChar(char c) {
     }
     return NULL;
 }
+/**
+ * Create Morse String
+ * @param morse       struct morseChar which contains the morse data
+ * @param morseString buffer to put the morse string in, will use -. for dit/dah
+ */
 void createMorseString(struct morseChar *morse, char *morseString) {
     int i;
     for(i = 0; i < morse->length; i++) {
@@ -70,7 +83,7 @@ void createMorseString(struct morseChar *morse, char *morseString) {
 }
 
 /**
- * Plays morse on terminal
+ * Plays morse on terminal in real time
  * @param str       word to play
  * @param inPlace   true if you want the function to use only one character.
  */
@@ -93,7 +106,7 @@ void playMorseWord(char *str, bool inPlace) {
                 dah = ((morse->sounds >> i) & 1) ? true : false;
                 // print next character, if in place, stay on character by 
                 // backspace
-                printf("%c", dah?'-':'.');
+                printf("%c", dah ? '-' : '.');
                 if(inPlace) printf("\b");
                 fflush(stdout);
 
@@ -132,14 +145,20 @@ int main(int argc, char *argv[]) {
                                         terminator to contain morse letter */
 
     struct morseChar *currentMorseChar; /**< current morse character       */
-    
+    int start = 1;
+    bool inPlace = false;
+
     // debugging information: show how large each morse char takes
     printf("Size of struct: %lu\n", sizeof(struct morseChar));
-
+    if(atoi(argv[1]) > 1) {
+        inPlace = true;
+        start++;
+        printf("Morse in place: [ ]\b\b");
+    }
     // loop through each word in args
-    for(int i = 1; i < argc; i++) {
+    for(int i = start; i < argc; i++) {
         // point to next word
         char *str = argv[i];
-        playMorseWord(str, true);
+        playMorseWord(str, inPlace);
     }
 }
