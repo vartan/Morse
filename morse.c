@@ -80,12 +80,11 @@ void playMorseWord(char *str, bool inPlace) {
     const int TIME_BETWEEN_ELEMENT = 1;
     const int TIME_DIT = 1;
     const int TIME_DAH = 3;
+
     int i;
     bool dah;
     float timeUnit = 0.100 * 1.0e6; // 100ms dit time
-    char backspace[2] = {'\b', 0};
-    if(!inPlace)
-        backspace[0] = 0;
+
     while(*str != 0) {
         struct morseChar *morse = getMorseForChar(*str);
         if(morse != NULL) {
@@ -94,7 +93,8 @@ void playMorseWord(char *str, bool inPlace) {
                 dah = ((morse->sounds >> i) & 1) ? true : false;
                 // print next character, if in place, stay on character by 
                 // backspace
-                printf("%c%s", dah?'-':'.', backspace);
+                printf("%c", dah?'-':'.');
+                if(inPlace) printf("\b");
                 fflush(stdout);
 
                 // sleep appropriate time
@@ -102,14 +102,15 @@ void playMorseWord(char *str, bool inPlace) {
 
                 // hide dit/dah when not active
                 if(inPlace) {
-                    printf(" %s", backspace);
+                    printf(" \b");
                     fflush(stdout);
 
                 }
                 // sleep between elements
                 usleep(timeUnit * (TIME_BETWEEN_ELEMENT));
             } // end of ditdah element 
-            printf(" %s", backspace);
+            printf(" ");
+            if(inPlace) printf("\b");
             fflush(stdout);
             usleep(timeUnit * (TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
         } // end of letter
