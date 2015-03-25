@@ -82,7 +82,7 @@ void playMorseWord(char *str, bool inPlace) {
     const int TIME_DAH = 3;
     int i;
     bool dah;
-    float timeUnit = 0.1*1e6; // time per dit
+    float timeUnit = 0.050 * 1e6; // time per dit, 50ms
     char backspace[2] = {'\b', 0};
     if(!inPlace)
         backspace[0] = 0;
