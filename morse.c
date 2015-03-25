@@ -115,15 +115,13 @@ void playMorseWord(char *str, bool inPlace) {
         } // end of letter
         str++;
     } // end of word
-    printf("/ %s%s", backspace, backspace);
-    fflush(stdout);
-
-    usleep(timeUnit * 
-        (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
-    if(inPlace) {
-        printf(" %s", backspace);
+    if(!inPlace) {
+        printf("/ ");
         fflush(stdout);
     }
+    usleep(timeUnit * 
+        (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
+
 
 }
 
@@ -142,6 +140,6 @@ int main(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
         // point to next word
         char *str = argv[i];
-        playMorseWord(str, true);
+        playMorseWord(str, false);
     }
 }
