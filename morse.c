@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
+#include <unistd.h>
+#include <stdbool.h>
 struct morseChar {
     uint8_t length:3; /**< number of sounds in the word               */
     uint8_t sounds:5; /**< list of sounds, where 0th bit is the first */
@@ -65,11 +66,14 @@ void createMorseString(struct morseChar *morse, char *morseString) {
         (*morseString++) = ((morse->sounds >> i) & 1) ? '-' : '.';
     }
     // add null terminator
-    (*morseString++) = 0; 
+    *morseString = 0; 
 }
+void playMorseWord(char *str);
 int main(int argc, char *argv[]) {
+
     char morseString[6];                /**< 5 character string + null 
                                         terminator to contain morse letter */
+
     struct morseChar *currentMorseChar; /**< current morse character       */
     
     // debugging information: show how large each morse char takes
@@ -79,22 +83,63 @@ int main(int argc, char *argv[]) {
     for(int i = 1; i < argc; i++) {
         // point to next word
         char *str = argv[i];
-        while(*str!=0) { // loop through each character
+        playMorseWord(str);
+        // loop through each character
+        /*while(*str!=0) { 
             // get morseChar pointer from character
             currentMorseChar = getMorseForChar(*str);
             if(currentMorseChar != NULL) {
                 // generate morse string from morse char
-                createMorseString(currentMorseChar, &morseString[0]);
+                //createMorseString(currentMorseChar, &morseString[0]);
                 // print morse char
-                printf("%s ", morseString);
-            }
-            else {
-                printf("\n\nERROR: Could not find %c\n\n", *str);
+                //printf("%s ", morseString);
+            } else {
+                printf("\n\nERROR: Could not find %c\a\n\n", *str);
+
                 exit(1);
             }
             str++;
-        }
+        }*/
         // print / between words
-        printf("/ ");
     }
+}
+/**
+ * Plays morse on terminal
+ * @param str word to play
+ */
+void playMorseWord(char *str) {
+    int i;
+    bool dah;
+    float timeUnit = 0.05*1e6;
+    char backspace[3] = {0, 0, 0};
+
+    printf(" ");
+    while(*str != 0) {
+        struct morseChar *morse = getMorseForChar(*str);
+        if(morse != NULL) {
+            for(i = 0; i < morse->length; i++) {
+                // add next morse character
+                dah = ((morse->sounds >> i) & 1) ? true : false;
+                printf("%s%c", backspace, dah?'_':'.');
+                fflush(stdout);
+                usleep(timeUnit * 3);
+                if(dah) usleep(timeUnit * 3);
+
+                printf("%s", backspace);
+                fflush(stdout);
+                usleep(timeUnit * 1);
+            }
+            printf(" %s", backspace);
+            fflush(stdout);
+            usleep(timeUnit * 3);
+
+        }
+        str++;
+    }
+    printf(" / %s", backspace);
+    fflush(stdout);
+    usleep(timeUnit * 27);
+
+
+
 }
