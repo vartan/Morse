@@ -73,9 +73,10 @@ struct morseChar *getMorseForChar(char c) {
 /**
  * Create Morse String
  * @param morse       struct morseChar which contains the morse data
- * @param morseString buffer to put the morse string in, will use -. for dit/dah
+ * @param morseString 6 byte buffer to put the morse string in, will use 
+ *                    DIT_CHAR and DAH_CHAR.
  */
-void createMorseString(struct morseChar *morse, char *morseString) {
+void createMorseString(struct morseChar *morse, char morseString[6]) {
     int i;
     for(i = 0; i < morse->length; i++) {
         // add next morse character
@@ -135,8 +136,9 @@ void playMorseWord(char *str, bool inPlace) {
         printf("/ ");
         fflush(stdout);
     }
-    usleep(timeUnit * 
-        (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR - TIME_BETWEEN_ELEMENT));
+    // already waited TIME_BETWEEN_CHAR, now wait the remaining time for 
+    // TIME_BETWEEN_WORDS
+    usleep(timeUnit * (TIME_BETWEEN_WORDS - TIME_BETWEEN_CHAR));
 
 
 }
