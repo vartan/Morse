@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+const char DIT_CHAR = '.';
+const char DAH_CHAR = '-';
+
 /**
  * Contains all data required to generate morse code
  */
@@ -76,7 +79,7 @@ void createMorseString(struct morseChar *morse, char *morseString) {
     int i;
     for(i = 0; i < morse->length; i++) {
         // add next morse character
-        (*morseString++) = ((morse->sounds >> i) & 1) ? '-' : '.';
+        (*morseString++) = ((morse->sounds >> i) & 1) ? DAH_CHAR : DIT_CHAR;
     }
     // add null terminator
     *morseString = 0; 
@@ -106,7 +109,7 @@ void playMorseWord(char *str, bool inPlace) {
                 dah = ((morse->sounds >> i) & 1) ? true : false;
                 // print next character, if in place, stay on character by 
                 // backspace
-                printf("%c", dah ? '-' : '.');
+                printf("%c", dah ? DAH_CHAR : DIT_CHAR);
                 if(inPlace) printf("\b");
                 fflush(stdout);
 
